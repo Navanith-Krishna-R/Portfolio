@@ -3,15 +3,18 @@
 </h2>
 
 <p align="center">
-  <b>Navanith Krishna R</b>
-</p>
-
-<p align="center">
-  🌐 Live Demo:
-  <a href="https://YOUR-VERCEL-LINK.vercel.app" target="_blank">
-    View Portfolio
+  <a href="https://portfolio-mu-one-14.vercel.app/" target="_blank">
+    <b>NAVANITH KRISHNA R</b>
   </a>
 </p>
+
+<div align="center">
+  <img 
+    src="./Images/Readme-img.png" 
+    alt="Navanith Krishna R Portfolio"
+    width="80%"
+  />
+</div>
 
 ---
 
@@ -49,9 +52,9 @@ and building clean, user-friendly applications.
 
 This repository is **not a template**.
 
-- This code is provided **only for viewing and evaluation**.
+- This code is provided **only for viewing and evaluation purposes**.
 - Please **do not copy, reuse, or deploy** this project as your own portfolio.
-- You are welcome to **get inspired**, but write your **own implementation**.
+- You may take inspiration, but write your **own implementation**.
 
 ---
 
