@@ -1,0 +1,12 @@
+/* Global App wrapper */
+.App {
+  text-align: center;
+  overflow-x: hidden;
+}
+
+/* Remove default CRA styles */
+.App-logo,
+.App-header,
+.App-link {
+  display: none;
+}
