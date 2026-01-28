@@ -1,76 +1,62 @@
 <h2 align="center">
-  Portfolio Website - v2.0<br/>
-  <a href="https://soumyajit.vercel.app/" target="_blank">soumyajit.tech</a>
+  Personal Portfolio Website
 </h2>
-<div align="center">
-  <img alt="Demo" src="./Images/readme-img1.png" />
-</div>
 
-<br/>
+<p align="center">
+  <b>Navanith Krishna R</b>
+</p>
 
-<center>
+<p align="center">
+  🌐 Live Demo:
+  <a href="https://YOUR-VERCEL-LINK.vercel.app" target="_blank">
+    View Portfolio
+  </a>
+</p>
 
-[![forthebadge](https://forthebadge.com/images/badges/built-with-love.svg)](https://forthebadge.com) &nbsp;
-[![forthebadge](https://forthebadge.com/images/badges/made-with-javascript.svg)](https://forthebadge.com) &nbsp;
-[![forthebadge](https://forthebadge.com/images/badges/open-source.svg)](https://forthebadge.com) &nbsp;
-![GitHub Repo stars](https://img.shields.io/github/stars/soumyajit4419/Portfolio?color=red&logo=github&style=for-the-badge) &nbsp;
-![GitHub forks](https://img.shields.io/github/forks/soumyajit4419/Portfolio?color=red&logo=github&style=for-the-badge)
+---
 
-</center>
+## About
 
-<h3 align="center">
-    🔹
-    <a href="https://github.com/soumyajit4419/Portfolio/issues">Report Bug</a> &nbsp; &nbsp;
-    🔹
-    <a href="https://github.com/soumyajit4419/Portfolio/issues">Request Feature</a>
-</h3>
+This is my **personal portfolio website**, created to showcase my projects,
+technical skills, and resume.
 
-## TL;DR
+The website reflects my interests in software development, problem-solving,
+and building clean, user-friendly applications.
 
-You can fork this repo to modify and make changes of your own. Please give me proper credit by linking back to [Soumyajit4419](https://github.com/soumyajit4419/Portfolio). Thanks!
+---
 
-## Built With
+## Tech Stack
 
-My personal portfolio <a href="https://soumyajit.vercel.app/" target="_blank">soumyajit.tech</a> which features some of my github projects as well as my resume and technical skills.<br/>
+- React.js  
+- JavaScript  
+- CSS3  
+- React-Bootstrap  
 
-This project was built using these technologies.
-
-- React.js
-- Node.js
-- Express.js
-- CSS3
-- VsCode
-- Vercel
+---
 
 ## Features
 
-**📖 Multi-Page Layout**
+- Multi-page layout  
+- Fully responsive design  
+- Resume viewer & download  
+- Clean and modern UI  
 
-**🎨 Styled with React-Bootstrap and Css with easy to customize colors**
+---
 
-**📱 Fully Responsive**
+## Usage Notice
 
-## Getting Started
+⚠️ **Please Read Carefully**
 
-Clone down this repository. You will need `node.js` and `git` installed globally on your machine.
+This repository is **not a template**.
 
-## 🛠 Installation and Setup Instructions
+- This code is provided **only for viewing and evaluation**.
+- Please **do not copy, reuse, or deploy** this project as your own portfolio.
+- You are welcome to **get inspired**, but write your **own implementation**.
 
-1. Installation: `npm install`
+---
 
-2. In the project directory, you can run: `npm start`
+## Author
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-The page will reload if you make edits.
-
-## Usage Instructions
-
-Open the project folder and Navigate to `/src/components/`. <br/>
-You will find all the components used and you can edit your information accordingly.
-
-### Show your support
-
-Give a ⭐ if you like this website!
-
-<a href="https://www.buymeacoffee.com/soumyajit4419" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-violet.png" alt="Buy Me A Coffee" height= "60px" width= "217px" ></a>
+**Navanith Krishna R**  
+- GitHub: https://github.com/Navanith-Krishna-R  
+- LinkedIn: https://www.linkedin.com/in/navanith-krishna-r/
