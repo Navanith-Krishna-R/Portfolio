@@ -8,14 +8,6 @@
   </a>
 </p>
 
-<div align="center">
-  <img 
-    src="./Images/Readme-img.png" 
-    alt="Navanith Krishna R Portfolio"
-    width="80%"
-  />
-</div>
-
 ---
 
 ## About
