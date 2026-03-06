@@ -3,35 +3,37 @@ import { Container, Row, Col } from "react-bootstrap";
 import ProjectCard from "./ProjectCards";
 import Particle from "../Particle";
 
-// ✅ EXISTING IMAGES (NO ERRORS)
-import chatify from "../../Assets/Projects/chatify.png";
-import blog from "../../Assets/Projects/blog.png";
-import editor from "../../Assets/Projects/codeEditor.png";
-import leaf from "../../Assets/Projects/leaf.png";
-import suicide from "../../Assets/Projects/suicide.png";
-import emotion from "../../Assets/Projects/emotion.png";
+// PROJECT IMAGES
+import chatify from "../../Assets/Projects/Mental-Health.jpg";
+import blog from "../../Assets/Projects/insightful.jpg";
+import leaf from "../../Assets/Projects/EasyCheesy.png";
+import suicide from "../../Assets/Projects/deepfake-detection.jpg";
+import emotion from "../../Assets/Projects/Language-Detection.png";
 
 function Projects() {
   return (
     <Container fluid className="project-section">
       <Particle />
       <Container>
+
         <h1 className="project-heading">
           My Recent <strong className="purple">Projects</strong>
         </h1>
+
         <p style={{ color: "white" }}>
-          Here are some of the projects I’ve built as part of my academic and
-          self-learning journey.
+          Here are some projects I’ve developed in full-stack development,
+          machine learning, and AI systems.
         </p>
 
         <Row style={{ justifyContent: "center", paddingBottom: "10px" }}>
+
           {/* CALMPANION */}
           <Col md={4} className="project-card">
             <ProjectCard
               imgPath={chatify}
               isBlog={false}
               title="Calmpanion"
-              description="A full-stack mental health support platform that allows users to learn about mental health, book appointments, donate to initiatives, and share blogs. Built using React and Node.js with a focus on user privacy."
+              description="A full-stack mental health awareness platform with blogs, appointment booking, and donation system. Built using React, Next.js, Node.js, and Prisma with MongoDB/PostgreSQL."
               ghLink="https://github.com/Navanith-Krishna-R/Calmpanion"
             />
           </Col>
@@ -41,55 +43,45 @@ function Projects() {
             <ProjectCard
               imgPath={blog}
               isBlog={false}
-              title="AI Resume Analyzer"
-              description="A web application that analyzes resumes using NLP techniques, extracts key skills, and provides structured feedback. Built using React, Node.js, and Python."
+              title="InsightfulCV – AI Resume Analyzer"
+              description="AI-powered ATS resume analysis platform built with Next.js, TypeScript, and TailwindCSS. Integrates Mistral AI via OpenRouter and Supabase for resume evaluation and job matching."
               ghLink="https://github.com/Navanith-Krishna-R/ai-resume-analyzer"
             />
           </Col>
 
-          {/* VEHICLE MANAGEMENT SYSTEM */}
-          <Col md={4} className="project-card">
-            <ProjectCard
-              imgPath={editor}
-              isBlog={false}
-              title="Vehicle Management System"
-              description="A backend-focused system for managing vehicles, telemetry data, and users. Implemented REST APIs using Node.js, Express, PostgreSQL, and JWT authentication."
-              ghLink="https://github.com/Navanith-Krishna-R/vehicle-management-system"
-            />
-          </Col>
-
-          {/* AI FOR URBAN FARMING */}
+          {/* EASY CHEESY */}
           <Col md={4} className="project-card">
             <ProjectCard
               imgPath={leaf}
               isBlog={false}
-              title="AI-Based Urban Farming Assistant"
-              description="An AI-driven application concept for sustainable urban farming that analyzes plant images and provides gardening recommendations for compact spaces."
-              ghLink="https://github.com/Navanith-Krishna-R/urban-farming-ai"
+              title="EasyCheesy – Food Ordering Platform"
+              description="A modern restaurant ordering platform built using Next.js, React, and MongoDB. Includes authentication middleware, admin dashboard, and responsive UI with TailwindCSS."
+              ghLink="https://github.com/Navanith-Krishna-R"
             />
           </Col>
 
-          {/* AI FOR SOCIAL GOOD */}
+          {/* DEEPFAKE DETECTION */}
           <Col md={4} className="project-card">
             <ProjectCard
               imgPath={suicide}
               isBlog={false}
-              title="AI for Social Good"
-              description="An NLP-based project to detect suicide-related content on social media platforms and help in early identification for prevention."
-              ghLink="https://github.com/Navanith-Krishna-R/AI_For_Social_Good"
+              title="Hybrid Deepfake Detection System"
+              description="Deep learning pipeline for detecting manipulated media using RGB and frequency-domain features. Combines EfficientNet-B4 with transformer encoders for deepfake detection."
+              ghLink="https://github.com/Navanith-Krishna-R"
             />
           </Col>
 
-          {/* EMOTION DETECTION */}
+          {/* LANGUAGE DETECTION */}
           <Col md={4} className="project-card">
             <ProjectCard
               imgPath={emotion}
               isBlog={false}
-              title="Emotion Detection System"
-              description="A CNN-based emotion recognition system trained on facial expression datasets and integrated with OpenCV for real-time emotion detection."
-              ghLink="https://github.com/Navanith-Krishna-R/Face_And_Emotion_Detection"
+              title="Language Detection & Translation"
+              description="Multilingual translation web application built with Flask, HTML, CSS, and JavaScript. Uses langdetect and googletrans libraries for real-time language detection and translation."
+              ghLink="https://github.com/Navanith-Krishna-R"
             />
           </Col>
+
         </Row>
       </Container>
     </Container>
