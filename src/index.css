@@ -1,11 +1,14 @@
-/* @import url('https://fonts.googleapis.com/css2?family=Outfit&display=swap'); */
+/* Base document styling lives in style.css (the design system).
+   This file only holds the pre-hydration background so the very first paint
+   is already dark instead of flashing white. */
 
-@import url("https://fonts.googleapis.com/css2?family=Outfit&family=PT+Mono&display=swap");
-
+html,
 body {
   margin: 0;
-  font-family: "PT Mono", monospace !important;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  background-image: linear-gradient(to left, rgb(27 20 41), rgb(21, 16, 35));
+  padding: 0;
+  background-color: #0b0d0f;
+}
+
+code {
+  font-family: "JetBrains Mono", "SFMono-Regular", Menlo, Consolas, monospace;
 }

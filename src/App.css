@@ -1,12 +1,9 @@
-/* Global App wrapper */
 .App {
-  text-align: center;
-  overflow-x: hidden;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
-/* Remove default CRA styles */
-.App-logo,
-.App-header,
-.App-link {
-  display: none;
+.App > main {
+  flex: 1;
 }

@@ -1,49 +1,63 @@
 import React from "react";
-import Card from "react-bootstrap/Card";
-import Button from "react-bootstrap/Button";
-import { CgWebsite } from "react-icons/cg";
-import { BsGithub } from "react-icons/bs";
+import { FiExternalLink, FiGithub } from "react-icons/fi";
+import projectImages from "./projectImages";
 
-function ProjectCards(props) {
+function ProjectCard({ project }) {
+  const image = projectImages[project.image];
+
   return (
-    <Card className="project-card-view">
-      <Card.Img
-        variant="top"
-        src={props.imgPath}
-        alt={`${props.title} project`}
-      />
-      <Card.Body>
-        <Card.Title>{props.title}</Card.Title>
+    <article className="card project-card">
+      <div className="project-card__media">
+        <img
+          src={image}
+          alt={`${project.title} — ${project.subtitle}`}
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
 
-        <Card.Text style={{ textAlign: "justify" }}>
-          {props.description}
-        </Card.Text>
+      <div className="project-card__body">
+        <h3 className="project-card__title">{project.title}</h3>
+        <p className="project-card__subtitle">{project.subtitle}</p>
+        <p className="project-card__desc">{project.description}</p>
 
-        <Button
-          variant="primary"
-          href={props.ghLink}
-          target="_blank"
-          rel="noreferrer"
-        >
-          <BsGithub /> &nbsp;
-          {props.isBlog ? "Blog" : "GitHub"}
-        </Button>
+        <div className="project-card__tags">
+          {project.stack.map((tech) => (
+            <span className="tag" key={tech}>
+              {tech}
+            </span>
+          ))}
+        </div>
 
-        {/* Demo button (only if demoLink exists and not a blog) */}
-        {!props.isBlog && props.demoLink && (
-          <Button
-            variant="primary"
-            href={props.demoLink}
+        <div className="project-card__actions">
+          <a
+            className="btn-ghost"
+            href={project.repo}
             target="_blank"
             rel="noreferrer"
-            style={{ marginLeft: "10px" }}
+            aria-label={`${project.title} source code on GitHub`}
           >
-            <CgWebsite /> &nbsp; Demo
-          </Button>
-        )}
-      </Card.Body>
-    </Card>
+            <FiGithub aria-hidden="true" />
+            Source
+          </a>
+
+          {/* Rendered only when a deployment actually exists. */}
+          {project.demo && (
+            <a
+              className="btn-ghost"
+              href={project.demo}
+              target="_blank"
+              rel="noreferrer"
+              aria-label={`${project.title} live demo`}
+            >
+              <FiExternalLink aria-hidden="true" />
+              Live Demo
+            </a>
+          )}
+        </div>
+      </div>
+    </article>
   );
 }
 
-export default ProjectCards;
+export default ProjectCard;

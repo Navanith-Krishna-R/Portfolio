@@ -1,48 +1,108 @@
-import React, { useState, useEffect } from "react";
-import { Container, Row } from "react-bootstrap";
-import Button from "react-bootstrap/Button";
-import Particle from "../Particle";
-import pdf from "../../Assets/Navanith_Krishna_R_Resume.pdf";
-import { AiOutlineDownload } from "react-icons/ai";
+import React, { useEffect, useRef, useState } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
+import { FiDownload, FiExternalLink } from "react-icons/fi";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
+import { RESUME_PATH, profile } from "../../data/site";
 
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
+/**
+ * The worker is served from /public rather than a CDN so the viewer keeps
+ * working offline and cannot break when a third-party host changes.
+ * It is a copy of node_modules/pdfjs-dist/build/pdf.worker.min.js — refresh it
+ * if pdfjs-dist is ever upgraded.
+ */
+pdfjs.GlobalWorkerOptions.workerSrc = `${process.env.PUBLIC_URL}/pdf.worker.min.js`;
+
+const DOWNLOAD_NAME = "Navanith_Krishna_R_Resume.pdf";
+const MAX_PAGE_WIDTH = 820;
 
 function ResumeNew() {
-  const [width, setWidth] = useState(window.innerWidth);
+  const containerRef = useRef(null);
+  const [pageWidth, setPageWidth] = useState(MAX_PAGE_WIDTH);
+  const [numPages, setNumPages] = useState(0);
+  const [failed, setFailed] = useState(false);
 
   useEffect(() => {
-    const handleResize = () => setWidth(window.innerWidth);
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    const measure = () => {
+      const available = containerRef.current?.clientWidth ?? MAX_PAGE_WIDTH;
+      setPageWidth(Math.min(available - 32, MAX_PAGE_WIDTH));
+    };
+
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
   }, []);
 
   return (
-    <Container fluid className="resume-section">
-      <Particle />
+    <main className="resume-page">
+      <div className="wrap">
+        <header className="resume-page__head">
+          <div
+            className="section-eyebrow"
+            style={{ justifyContent: "center" }}
+          >
+            Resume
+          </div>
+          <h1 className="section-title">{profile.name}</h1>
+          <p className="section-lead" style={{ margin: "0 auto" }}>
+            {profile.roles.join(" · ")}
+          </p>
 
-      {/* Resume Preview */}
-      <Row className="resume">
-        <Document file={pdf} className="d-flex justify-content-center">
-          <Page pageNumber={1} scale={width > 786 ? 1.7 : 0.6} />
-        </Document>
-      </Row>
+          <div className="resume-page__actions">
+            <a className="btn-gold" href={RESUME_PATH} download={DOWNLOAD_NAME}>
+              <FiDownload aria-hidden="true" />
+              Download Resume
+            </a>
+            <a
+              className="btn-ghost"
+              href={RESUME_PATH}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <FiExternalLink aria-hidden="true" />
+              Open in new tab
+            </a>
+          </div>
+        </header>
 
-      {/* Download Button at Bottom */}
-      <Row style={{ justifyContent: "center", marginTop: "30px" }}>
-        <Button
-          variant="primary"
-          href={pdf}
-          target="_blank"
-          rel="noreferrer"
-          style={{ maxWidth: "250px" }}
-        >
-          <AiOutlineDownload />
-          &nbsp;Download CV
-        </Button>
-      </Row>
-    </Container>
+        <div className="resume-doc" ref={containerRef}>
+          {failed ? (
+            <div className="resume-fallback">
+              <p>
+                The inline preview couldn&apos;t be rendered in this browser.
+                You can still open or download the PDF directly.
+              </p>
+              <a
+                className="btn-gold"
+                href={RESUME_PATH}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <FiExternalLink aria-hidden="true" />
+                Open Resume PDF
+              </a>
+            </div>
+          ) : (
+            <Document
+              file={RESUME_PATH}
+              onLoadSuccess={({ numPages: total }) => setNumPages(total)}
+              onLoadError={() => setFailed(true)}
+              onSourceError={() => setFailed(true)}
+              loading={<p className="resume-fallback">Loading resume…</p>}
+            >
+              {Array.from({ length: numPages }, (_, index) => (
+                <Page
+                  key={`page-${index + 1}`}
+                  pageNumber={index + 1}
+                  width={pageWidth}
+                  renderTextLayer={false}
+                  renderAnnotationLayer={false}
+                />
+              ))}
+            </Document>
+          )}
+        </div>
+      </div>
+    </main>
   );
 }
 
