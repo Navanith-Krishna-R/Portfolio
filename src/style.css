@@ -150,23 +150,53 @@ body.is-home::before {
   }
 }
 
-/* Ambient depth for the rest of the page: two soft gold pools and one cool
-   pool, fixed behind everything — cheaper and calmer than a particle field.
-   Breathes very slowly (same technique as the hero backdrop and the contact
-   glow) so sections below the hero still feel quietly alive instead of flat,
-   without ever drawing over content: z-index -3 keeps it strictly behind
-   every card, and the opacity range (0.7-1 of already-faint values) is far
-   below anything that could affect text contrast. */
+/* Ambient depth for the rest of the page: three soft pools (two gold, one
+   cool) plus a scattered field of small gold specks, fixed behind everything
+   — cheaper and calmer than a particle field. Both layers breathe together
+   very slowly (same technique as the hero backdrop and the contact glow) so
+   every section feels quietly alive instead of flat, without ever drawing
+   over content: z-index -3 keeps it strictly behind every card, and the
+   opacity range (0.7-1 of already-faint values) is far below anything that
+   could affect text contrast. The star layers are tiled (repeat) while the
+   three pools are single soft washes (no-repeat) — per-layer repeat/size
+   below keeps that straight across all ten background-image layers. */
 body::after {
   content: "";
   position: fixed;
   inset: 0;
   z-index: -3;
   pointer-events: none;
-  background:
-    radial-gradient(45rem 35rem at 8% 18%, rgba(245, 197, 66, 0.055), transparent 60%),
+  background-image: radial-gradient(
+      45rem 35rem at 8% 18%,
+      rgba(245, 197, 66, 0.055),
+      transparent 60%
+    ),
     radial-gradient(55rem 45rem at 50% 108%, rgba(120, 140, 170, 0.05), transparent 60%),
-    radial-gradient(34rem 26rem at 92% 8%, rgba(245, 197, 66, 0.045), transparent 60%);
+    radial-gradient(34rem 26rem at 92% 8%, rgba(245, 197, 66, 0.045), transparent 60%),
+    radial-gradient(1.6px 1.6px at 8% 10%, rgba(255, 217, 90, 0.55), transparent 100%),
+    radial-gradient(1.1px 1.1px at 22% 34%, rgba(245, 197, 66, 0.4), transparent 100%),
+    radial-gradient(1.8px 1.8px at 46% 6%, rgba(255, 217, 90, 0.35), transparent 100%),
+    radial-gradient(1.2px 1.2px at 63% 28%, rgba(245, 197, 66, 0.5), transparent 100%),
+    radial-gradient(1.4px 1.4px at 81% 12%, rgba(255, 217, 90, 0.3), transparent 100%),
+    radial-gradient(1.1px 1.1px at 93% 40%, rgba(245, 197, 66, 0.45), transparent 100%),
+    radial-gradient(1.7px 1.7px at 14% 62%, rgba(255, 217, 90, 0.4), transparent 100%),
+    radial-gradient(1.3px 1.3px at 35% 78%, rgba(245, 197, 66, 0.3), transparent 100%),
+    radial-gradient(1.2px 1.2px at 58% 58%, rgba(255, 217, 90, 0.5), transparent 100%),
+    radial-gradient(1.5px 1.5px at 74% 82%, rgba(245, 197, 66, 0.35), transparent 100%),
+    radial-gradient(1.1px 1.1px at 90% 68%, rgba(255, 217, 90, 0.4), transparent 100%),
+    radial-gradient(1.4px 1.4px at 4% 92%, rgba(245, 197, 66, 0.3), transparent 100%);
+  /* 15 layers total: 3 pools (no-repeat) + 12 star dots (repeat, tiled). Kept
+     one value per line here specifically so this count is easy to verify
+     against the background-image list above — a mismatch doesn't error, it
+     silently cycles the list and desyncs individual stars from the tile. */
+  background-repeat:
+    no-repeat, no-repeat, no-repeat,
+    repeat, repeat, repeat, repeat, repeat, repeat,
+    repeat, repeat, repeat, repeat, repeat, repeat;
+  background-size:
+    auto, auto, auto,
+    420px 460px, 420px 460px, 420px 460px, 420px 460px, 420px 460px, 420px 460px,
+    420px 460px, 420px 460px, 420px 460px, 420px 460px, 420px 460px, 420px 460px;
   animation: ambientBreathe 19s ease-in-out infinite;
 }
 
@@ -1602,38 +1632,10 @@ img {
   pointer-events: none;
 }
 
-/* A scattered field of small gold specks over the full page height, in place
-   of reusing the hero's light-shaft image here (that artwork is tuned for the
-   hero's own proportions and left-aligned copy; on this centred page it read
-   as a mismatched, hard-edged crop rather than atmosphere). One repeating
-   tile of hand-placed dots at varied size/opacity — no image request, no
-   animation, just texture behind the document. */
-.resume-page::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background-image: radial-gradient(
-      1.6px 1.6px at 8% 10%,
-      rgba(255, 217, 90, 0.55),
-      transparent 100%
-    ),
-    radial-gradient(1.1px 1.1px at 22% 34%, rgba(245, 197, 66, 0.4), transparent 100%),
-    radial-gradient(1.8px 1.8px at 46% 6%, rgba(255, 217, 90, 0.35), transparent 100%),
-    radial-gradient(1.2px 1.2px at 63% 28%, rgba(245, 197, 66, 0.5), transparent 100%),
-    radial-gradient(1.4px 1.4px at 81% 12%, rgba(255, 217, 90, 0.3), transparent 100%),
-    radial-gradient(1.1px 1.1px at 93% 40%, rgba(245, 197, 66, 0.45), transparent 100%),
-    radial-gradient(1.7px 1.7px at 14% 62%, rgba(255, 217, 90, 0.4), transparent 100%),
-    radial-gradient(1.3px 1.3px at 35% 78%, rgba(245, 197, 66, 0.3), transparent 100%),
-    radial-gradient(1.2px 1.2px at 58% 58%, rgba(255, 217, 90, 0.5), transparent 100%),
-    radial-gradient(1.5px 1.5px at 74% 82%, rgba(245, 197, 66, 0.35), transparent 100%),
-    radial-gradient(1.1px 1.1px at 90% 68%, rgba(255, 217, 90, 0.4), transparent 100%),
-    radial-gradient(1.4px 1.4px at 4% 92%, rgba(245, 197, 66, 0.3), transparent 100%);
-  background-repeat: repeat;
-  background-size: 420px 460px;
-  opacity: 0.75;
-}
+/* The scattered gold-speck field used to live here as a resume-page-only
+   layer; it's now part of the site-wide body::after (see the "Ambient
+   depth" rule near the top of this file), so every page — including this
+   one — gets it without duplicating the pattern. */
 
 .resume-page__head {
   text-align: center;
