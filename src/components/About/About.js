@@ -1,58 +1,40 @@
 import React from "react";
-import { Container, Row, Col } from "react-bootstrap";
-import Particle from "../Particle";
-import Github from "./Github";
-import Techstack from "./Techstack";
-import AboutCard from "./AboutCard";
-import laptopImg from "../../Assets/about.png";
-import Toolstack from "./Toolstack";
+import Section from "../Section";
+import { highlights, profile } from "../../data/site";
 
 function About() {
   return (
-    <>
-      <Particle />
-      <Container fluid className="about-section">
-        <Container>
-          <Row style={{ justifyContent: "center", padding: "10px" }}>
-            <Col
-              md={7}
-              style={{
-                justifyContent: "center",
-                paddingTop: "30px",
-                paddingBottom: "50px",
-              }}
-            >
-              <h1 style={{ fontSize: "2.1em", paddingBottom: "20px" }}>
-                Know Who <strong className="purple">I Am</strong>
-              </h1>
-              <AboutCard />
-            </Col>
+    <Section id="about" eyebrow="About" title="Building software that ships">
+      <div className="about__grid">
+        <div className="about__body">
+          <p>{profile.summary}</p>
+          <p>
+            I&apos;m a final-year Computer Science and Engineering student at{" "}
+            <strong className="accent">BMS College of Engineering</strong>,
+            Bengaluru. Most of my time goes into building end-to-end products —
+            designing the data model, writing the API, and putting a responsive
+            interface in front of it.
+          </p>
+          <p>
+            Alongside web development I work on applied machine learning: a
+            hybrid deepfake detection model, an LLM-powered resume analyzer, and
+            VANET simulation research at my college. I care about clean,
+            readable code and about understanding the fundamentals underneath
+            the frameworks.
+          </p>
+        </div>
 
-            <Col
-              md={5}
-              style={{ paddingTop: "120px", paddingBottom: "50px" }}
-              className="about-img"
-            >
-              <img src={laptopImg} alt="about" className="img-fluid" />
-            </Col>
-          </Row>
-
-          <h1 className="project-heading">
-            Professional <strong className="purple">Skillset</strong>
-          </h1>
-
-          <Techstack />
-
-          <h1 className="project-heading">
-            <strong className="purple">Tools</strong> I Use
-          </h1>
-
-          <Toolstack />
-
-          <Github />
-        </Container>
-      </Container>
-    </>
+        <div className="about__cards">
+          {highlights.map((item) => (
+            <article className="card info-card" key={item.label}>
+              <p className="info-card__label">{item.label}</p>
+              <p className="info-card__value">{item.value}</p>
+              <p className="info-card__detail">{item.detail}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </Section>
   );
 }
 

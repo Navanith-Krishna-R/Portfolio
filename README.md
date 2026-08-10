@@ -23,18 +23,21 @@ and building clean, user-friendly applications.
 ## Tech Stack
 
 - React.js  
+- React Router  
 - JavaScript  
-- CSS3  
-- React-Bootstrap  
+- CSS3 (custom design system, no UI framework)  
+- HTML Canvas (hero animation)  
 
 ---
 
 ## Features
 
-- Multi-page layout  
+- Single-page layout with anchored sections and a dedicated resume route  
+- Dark charcoal + gold design system driven by CSS custom properties  
+- Hand-written canvas hero animation (no animation library)  
 - Fully responsive design  
 - Resume viewer & download  
-- Clean and modern UI  
+- Reduced-motion and keyboard-navigation support  
 
 ---
 
