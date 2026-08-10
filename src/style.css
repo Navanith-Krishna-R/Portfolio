@@ -110,6 +110,26 @@ body::before {
   background-size: cover, cover, cover;
   background-position: center top, center top, 62% top;
   background-repeat: no-repeat;
+  /* Slow breathing so the hero reads as alive rather than a static photo,
+     without moving anything a viewer could consciously point at. Opacity and
+     scale move together on the whole pseudo-element, so the protective
+     gradients dim and brighten in lockstep with the artwork underneath and
+     the text-contrast ratio never changes. Caught by the global
+     prefers-reduced-motion rule below. */
+  transform-origin: center top;
+  animation: backdropBreathe 17s ease-in-out infinite;
+}
+
+@keyframes backdropBreathe {
+  0%,
+  100% {
+    opacity: 0.9;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.018);
+  }
 }
 
 @media (max-width: 991px) {
@@ -471,6 +491,13 @@ img {
   width: 36px;
   height: 36px;
   flex-shrink: 0;
+  transition: transform var(--speed) var(--ease),
+    filter var(--speed) var(--ease);
+}
+
+.brand:hover .brand__mark {
+  transform: scale(1.06);
+  filter: drop-shadow(0 0 6px var(--gold-glow));
 }
 
 .brand__name {
@@ -498,7 +525,11 @@ img {
   border: none;
   border-radius: var(--radius-sm);
   cursor: pointer;
-  transition: color var(--speed) var(--ease);
+  transition: color var(--speed) var(--ease), transform var(--speed) var(--ease);
+}
+
+.nav-link:hover {
+  transform: translateY(-1px);
 }
 
 .nav-link::after {
@@ -737,11 +768,29 @@ img {
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7), 0 0 14px rgba(0, 0, 0, 0.55);
 }
 
-.hero__roles-sep {
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: var(--text-faint);
+/* Visually hidden but reachable by assistive tech — used to give screen
+   readers the full role list once as static text, since the rotating span
+   beside it is aria-hidden. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.hero__role-rotator {
+  display: inline-block;
+  opacity: 1;
+  transition: opacity 320ms ease;
+}
+
+.hero__role-rotator.is-fading {
+  opacity: 0;
 }
 
 .hero__intro {
@@ -791,6 +840,174 @@ img {
   display: block;
   width: 100%;
   height: 100%;
+}
+
+/* --- Floating tech panels -------------------------------------------------
+   Small glass readouts anchored to the four corners of the visual, each
+   drifting a few pixels on its own slow, staggered loop so they read as
+   independent rather than one synchronized bounce. */
+
+.hero__panels {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.hero__panel {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.55rem 0.75rem;
+  background: rgba(21, 26, 31, 0.62);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  box-shadow: 0 10px 24px -16px rgba(0, 0, 0, 0.6);
+  animation: panelDrift 8s ease-in-out infinite;
+}
+
+.hero__panel-label {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.hero__panel-value {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.hero__panel-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 0 3px var(--gold-dim);
+  flex-shrink: 0;
+}
+
+.hero__panel-bar {
+  display: block;
+  width: 96px;
+  height: 5px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.hero__panel-bar-fill {
+  display: block;
+  width: 82%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--gold), var(--gold-bright));
+}
+
+.hero__panel-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  max-width: 132px;
+}
+
+.hero__panel-chips span {
+  padding: 0.14rem 0.45rem;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+}
+
+.hero__panel--status {
+  top: 4%;
+  left: -6%;
+  animation-delay: 0s;
+}
+
+.hero__panel--model {
+  top: 10%;
+  right: -8%;
+  animation-delay: -2.6s;
+  animation-duration: 9.5s;
+}
+
+.hero__panel--api {
+  bottom: 12%;
+  left: -9%;
+  animation-delay: -5.2s;
+  animation-duration: 7s;
+}
+
+.hero__panel--stack {
+  bottom: 3%;
+  right: -5%;
+  animation-delay: -1.4s;
+  animation-duration: 8.6s;
+}
+
+@keyframes panelDrift {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(0, -7px);
+  }
+}
+
+@media (max-width: 1180px) {
+  /* Keeps the panels from overlapping the hero copy as the two columns
+     narrow before the layout stacks outright. */
+  .hero__panel--status,
+  .hero__panel--api {
+    left: -2%;
+  }
+
+  .hero__panel--model,
+  .hero__panel--stack {
+    right: -2%;
+  }
+}
+
+@media (max-width: 767px) {
+  /* Only two panels on mobile, both tucked fully inside the visual, so the
+     compact hero stays legible instead of crowded. */
+  .hero__panels {
+    inset: 4%;
+  }
+
+  .hero__panel--model,
+  .hero__panel--api {
+    display: none;
+  }
+
+  .hero__panel--status {
+    top: 2%;
+    left: 0;
+  }
+
+  .hero__panel--stack {
+    bottom: 0;
+    right: 0;
+  }
+
+  .hero__panel-chips {
+    max-width: 110px;
+  }
 }
 
 .hero__scroll {
@@ -1084,6 +1301,7 @@ img {
 }
 
 .project-card {
+  position: relative;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -1094,6 +1312,31 @@ img {
   transform: translateY(-6px);
   border-color: var(--gold);
   box-shadow: 0 18px 40px -22px var(--gold-glow), 0 0 0 1px var(--gold-glow-soft);
+}
+
+/* A single soft gold sweep on first hover — not a looping shine, just a
+   one-time cue that the card responded to the pointer. */
+.project-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(
+    115deg,
+    transparent 40%,
+    rgba(245, 197, 66, 0.09) 50%,
+    transparent 60%
+  );
+  background-size: 250% 100%;
+  background-position: 100% 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s var(--ease), background-position 0.9s var(--ease);
+}
+
+.project-card:hover::after {
+  opacity: 1;
+  background-position: -20% 0;
 }
 
 .project-card__media {
@@ -1140,6 +1383,12 @@ img {
 .project-card__title {
   font-size: 1.2rem;
   margin-bottom: 0.15rem;
+  transition: transform var(--speed) var(--ease), color var(--speed) var(--ease);
+}
+
+.project-card:hover .project-card__title {
+  transform: translateX(3px);
+  color: var(--gold-bright);
 }
 
 .project-card__subtitle {
@@ -1334,6 +1583,7 @@ img {
 
 .contact__panel {
   position: relative;
+  z-index: 0;
   overflow: hidden;
   padding: 4rem 2rem;
   border-radius: var(--radius-lg);
@@ -1341,6 +1591,36 @@ img {
     radial-gradient(38rem 18rem at 50% -10%, var(--gold-glow-soft), transparent 70%),
     var(--surface);
   border: 1px solid var(--border);
+}
+
+/* Slow breathing glow behind the CTA — negative z-index keeps it under the
+   panel's own text and buttons; overflow: hidden on the panel clips it to the
+   rounded card edge regardless of stacking order. */
+.contact__panel::before {
+  content: "";
+  position: absolute;
+  inset: -25%;
+  z-index: -1;
+  background: radial-gradient(
+    26rem 18rem at 50% 38%,
+    var(--gold-glow),
+    transparent 70%
+  );
+  opacity: 0.4;
+  animation: contactGlowBreathe 10s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes contactGlowBreathe {
+  0%,
+  100% {
+    opacity: 0.28;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.52;
+    transform: scale(1.07);
+  }
 }
 
 .contact__title {
@@ -1502,6 +1782,50 @@ img {
   transform: none;
 }
 
+/* Grid stagger: project cards, skill cards and education cards each get their
+   own fade + slight rise on top of the section's own reveal, offset a few
+   tens of milliseconds apart so a grid arrives as a light cascade instead of
+   one flat block. Capped at four steps — "Project 5" reveals alongside
+   "Project 4" rather than making a visitor wait through a longer queue. */
+.projects__grid > .project-card,
+.skills__grid > .skill-card,
+.education__grid > .edu-card {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.5s var(--ease), transform 0.5s var(--ease);
+}
+
+.reveal.is-visible .projects__grid > .project-card,
+.reveal.is-visible .skills__grid > .skill-card,
+.reveal.is-visible .education__grid > .edu-card {
+  opacity: 1;
+  transform: none;
+}
+
+.projects__grid > .project-card:nth-child(1),
+.skills__grid > .skill-card:nth-child(1),
+.education__grid > .edu-card:nth-child(1) {
+  transition-delay: 0ms;
+}
+
+.projects__grid > .project-card:nth-child(2),
+.skills__grid > .skill-card:nth-child(2),
+.education__grid > .edu-card:nth-child(2) {
+  transition-delay: 80ms;
+}
+
+.projects__grid > .project-card:nth-child(3),
+.skills__grid > .skill-card:nth-child(3),
+.education__grid > .edu-card:nth-child(3) {
+  transition-delay: 160ms;
+}
+
+.projects__grid > .project-card:nth-child(n + 4),
+.skills__grid > .skill-card:nth-child(n + 4),
+.education__grid > .edu-card:nth-child(n + 4) {
+  transition-delay: 240ms;
+}
+
 /* ==========================================================================
    Reduced motion
    Kills every decorative animation and transition, and neutralises the
@@ -1532,11 +1856,38 @@ img {
   .project-card:hover,
   .info-card:hover,
   .skill-card:hover,
-  .edu-card:hover {
+  .edu-card:hover,
+  .project-card:hover .project-card__title,
+  .brand:hover .brand__mark,
+  .nav-link:hover {
     transform: none;
   }
 
   .project-card:hover .project-card__media img {
     transform: none;
+  }
+
+  .project-card::after {
+    display: none;
+  }
+
+  /* Hero: freeze every ambient layer and show the finished state instead of
+     mid-motion — nothing here should be left invisible or half-transitioned. */
+  body::before {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .hero__panel {
+    animation: none;
+  }
+
+  .hero__role-rotator {
+    transition: none;
+  }
+
+  .contact__panel::before {
+    animation: none;
   }
 }

@@ -1,6 +1,7 @@
 import React from "react";
 import { FiArrowRight, FiDownload, FiGithub, FiLinkedin } from "react-icons/fi";
 import HeroVisual from "./HeroVisual";
+import RoleRotator from "./RoleRotator";
 import { RESUME_PATH, links, profile } from "../../data/site";
 
 function Hero() {
@@ -19,14 +20,11 @@ function Hero() {
             </h1>
 
             <div className="hero__roles">
-              {profile.roles.map((role, index) => (
-                <React.Fragment key={role}>
-                  {index > 0 && (
-                    <span className="hero__roles-sep" aria-hidden="true" />
-                  )}
-                  <span>{role}</span>
-                </React.Fragment>
-              ))}
+              {/* Screen readers get the full list once, as static text — the
+                  rotating span beside it is aria-hidden so its periodic text
+                  changes are never announced. */}
+              <span className="sr-only">{profile.roles.join(" · ")}</span>
+              <RoleRotator roles={profile.roles} />
             </div>
 
             <p className="hero__intro">{profile.intro}</p>
