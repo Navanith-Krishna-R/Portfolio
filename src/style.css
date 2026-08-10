@@ -58,10 +58,16 @@ html {
   -webkit-text-size-adjust: 100%;
 }
 
+html {
+  background-color: var(--bg);
+}
+
 body {
   position: relative;
   margin: 0;
-  background-color: var(--bg);
+  /* Deliberately transparent — see index.css. The colour is on <html> so the
+     backdrop pseudo-element is not painted over. */
+  background-color: transparent;
   color: var(--text);
   font-family: var(--font-sans);
   font-size: 16px;
@@ -361,7 +367,11 @@ img {
    Preloader
    ========================================================================== */
 
-#preloader {
+/* Both states must be taken out of flow. When only opacity/visibility were
+   swapped, the dismissed preloader kept its 74px logo in the layout and pushed
+   the whole document down. */
+#preloader,
+#preloader-none {
   position: fixed;
   inset: 0;
   z-index: 999999;
@@ -369,14 +379,13 @@ img {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: opacity 0.5s var(--ease);
+  transition: opacity 0.5s var(--ease), visibility 0.5s;
 }
 
 #preloader-none {
   opacity: 0;
   pointer-events: none;
   visibility: hidden;
-  transition: opacity 0.5s var(--ease), visibility 0.5s;
 }
 
 .preloader-mark {
@@ -696,6 +705,8 @@ img {
   line-height: 1.04;
   letter-spacing: -0.035em;
   margin-bottom: 1.1rem;
+  /* Avoids stranding the lone "R" on its own line. */
+  text-wrap: balance;
 }
 
 .hero__name span {

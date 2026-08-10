@@ -2,11 +2,20 @@
    This file only holds the pre-hydration background so the very first paint
    is already dark instead of flashing white. */
 
-html,
-body {
+/* The page background lives on <html>, never on <body>. body::before paints the
+   hero backdrop at a negative z-index, and a background on body would be drawn
+   on top of it (negative-z-index children paint before their parent's
+   background in the CSS paint order). */
+html {
   margin: 0;
   padding: 0;
   background-color: #0b0d0f;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: transparent;
 }
 
 code {

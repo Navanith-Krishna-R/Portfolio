@@ -35,28 +35,56 @@ function Navbar() {
     setOpen(false);
   }, [location.pathname]);
 
-  // Scroll spy — highlights the section currently occupying the upper band of
-  // the viewport.
+  // Scroll spy. Deliberately computed from scroll position rather than an
+  // IntersectionObserver: intersectionRatio is relative to each target's own
+  // height, so a full-height hero scores a *lower* ratio than a short section
+  // sharing the same band and loses the comparison.
   useEffect(() => {
-    if (!onHome || typeof IntersectionObserver === "undefined") return undefined;
+    if (!onHome) return undefined;
 
-    const elements = SECTIONS.map((s) => document.getElementById(s.id)).filter(
-      Boolean
-    );
+    let frame = 0;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+    const compute = () => {
+      frame = 0;
 
-        if (visible) setActive(visible.target.id);
-      },
-      { rootMargin: "-25% 0px -55% 0px", threshold: [0, 0.25, 0.6] }
-    );
+      // A probe line a third of the way down the viewport decides the section.
+      const probe = window.scrollY + window.innerHeight * 0.34;
+      let current = SECTIONS[0].id;
 
-    elements.forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
+      SECTIONS.forEach((section) => {
+        const el = document.getElementById(section.id);
+        if (!el) return;
+        const top = el.getBoundingClientRect().top + window.scrollY;
+        if (top <= probe) current = section.id;
+      });
+
+      // The last section is usually too short to ever reach the probe line, so
+      // resolve it explicitly once the page is scrolled to the bottom. The
+      // `scrollable` guard matters: while the preloader holds the page at
+      // `overflow: hidden; height: 100vh` there is nothing to scroll, and
+      // without it every load would start out highlighting the last section.
+      const scrollable =
+        document.documentElement.scrollHeight - window.innerHeight;
+      if (scrollable > 4 && window.scrollY >= scrollable - 2) {
+        current = SECTIONS[SECTIONS.length - 1].id;
+      }
+
+      setActive(current);
+    };
+
+    const onScroll = () => {
+      if (!frame) frame = window.requestAnimationFrame(compute);
+    };
+
+    compute();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (frame) window.cancelAnimationFrame(frame);
+    };
   }, [onHome]);
 
   const goToSection = useCallback(
