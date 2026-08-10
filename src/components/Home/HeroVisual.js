@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from "react";
-import HeroPanels from "./HeroPanels";
 
 /**
  * Hero visual: a slowly rotating 3D node lattice with data pulses travelling
@@ -618,7 +617,6 @@ function HeroVisual() {
   return (
     <div className="hero__visual">
       <canvas ref={canvasRef} aria-hidden="true" />
-      <HeroPanels />
     </div>
   );
 }
