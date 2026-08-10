@@ -13,6 +13,13 @@ import React, { useEffect, useRef } from "react";
  *
  * Layers, back to front: ambient glow -> orbit rings -> ambient particles ->
  * edges -> signal burst overlay -> data pulses -> nodes.
+ *
+ * Depth: near/far nodes are separated by more than the raw perspective
+ * projection gives (size and alpha ranges are deliberately widened), and on
+ * desktop the whole scene parallaxes a few degrees toward the pointer —
+ * eased, not snapped, and layered so nearer elements (particles, rings) shift
+ * a little more than the lattice itself for a genuine sense of depth rather
+ * than the whole canvas panning as one flat image.
  */
 
 const GOLD = "245, 197, 66";
@@ -173,6 +180,15 @@ function HeroVisual() {
     // to keep the compact canvas from feeling crowded.
     const showThirdOrbit = !isCompact;
 
+    // --- Mouse parallax: desktop + motion-allowed only. Target values follow
+    // the pointer instantly; the actual values used for rendering ease toward
+    // them each frame so the scene never snaps.
+    const enableParallax = !isCompact && !reduceMotion;
+    let targetPX = 0;
+    let targetPY = 0;
+    let parallaxX = 0;
+    let parallaxY = 0;
+
     const projected = nodes.map(() => ({ x: 0, y: 0, scale: 0, depth: 0 }));
 
     let width = 0;
@@ -198,10 +214,13 @@ function HeroVisual() {
     const project = () => {
       const cx = width / 2;
       const cy = height / 2;
-      const cosA = Math.cos(angle);
-      const sinA = Math.sin(angle);
-      const cosT = Math.cos(TILT);
-      const sinT = Math.sin(TILT);
+      // Rotational parallax: a few degrees of extra spin/tilt eased toward the
+      // pointer, layered on top of the constant auto-rotation rather than
+      // replacing it.
+      const cosA = Math.cos(angle + parallaxX * 0.18);
+      const sinA = Math.sin(angle + parallaxX * 0.18);
+      const cosT = Math.cos(TILT + parallaxY * 0.12);
+      const sinT = Math.sin(TILT + parallaxY * 0.12);
 
       for (let i = 0; i < nodes.length; i += 1) {
         const n = nodes[i];
@@ -221,8 +240,10 @@ function HeroVisual() {
     };
 
     const drawRings = () => {
-      const cx = width / 2;
-      const cy = height / 2;
+      // Background layer: shifts the least of the three parallax layers, so
+      // it reads as sitting further back than the lattice and particles.
+      const cx = width / 2 + parallaxX * radius * 0.035;
+      const cy = height / 2 + parallaxY * radius * 0.035;
 
       ctx.save();
       ctx.translate(cx, cy);
@@ -318,8 +339,12 @@ function HeroVisual() {
             ? Math.max(0, (1 - lifeRatio) / 0.25)
             : 1;
 
-        const px = cx + particle.x * radius;
-        const py = cy + particle.y * radius;
+        // Foreground layer: shifts the most of the three parallax layers,
+        // and nearer individual particles (higher depth) shift a little more
+        // than farther ones — the same near-moves-more cue applied per-dot.
+        const parallaxAmount = radius * (0.05 + particle.depth * 0.09);
+        const px = cx + particle.x * radius + parallaxX * parallaxAmount;
+        const py = cy + particle.y * radius + parallaxY * parallaxAmount;
         const alpha = envelope * (0.1 + particle.depth * 0.22);
 
         ctx.beginPath();
@@ -420,13 +445,15 @@ function HeroVisual() {
         const a = projected[edge.a];
         const b = projected[edge.b];
         const depth = (a.depth + b.depth) / 2;
-        const alpha = (0.13 + depth * 0.45) * edge.strength;
+        // Widened from the original 0.13-0.58 range so far edges recede
+        // further into the background instead of holding a flat mid-alpha.
+        const alpha = (0.07 + depth * 0.58) * edge.strength;
 
         ctx.beginPath();
         ctx.moveTo(a.x, a.y);
         ctx.lineTo(b.x, b.y);
         ctx.strokeStyle = `rgba(${depth > 0.62 ? GOLD : COOL}, ${alpha})`;
-        ctx.lineWidth = depth > 0.62 ? 1.25 : 0.95;
+        ctx.lineWidth = depth > 0.62 ? 1.3 : 0.85;
         ctx.stroke();
       }
 
@@ -464,9 +491,11 @@ function HeroVisual() {
         const p = projected[i];
         const node = nodes[i];
         const shimmer = 0.78 + 0.22 * Math.sin(frame * 0.02 + node.phase * 6.28);
-        const depthSize = 0.82 + p.depth * 0.36;
+        // Widened from 0.82-1.18 so the nearest nodes read distinctly larger
+        // than the farthest, instead of the cluster blending into one size.
+        const depthSize = 0.7 + p.depth * 0.58;
         const size = (node.hub ? 3.1 : 1.75) * p.scale * depthSize * shimmer;
-        const alpha = Math.min(1, (node.hub ? 0.82 : 0.46) + p.depth * 0.54);
+        const alpha = Math.min(1, (node.hub ? 0.74 : 0.36) + p.depth * 0.64);
 
         ctx.beginPath();
         ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
@@ -548,6 +577,14 @@ function HeroVisual() {
       updateParticles(dt);
       updateBurst(dt);
 
+      // Ease the rendered parallax value toward the pointer's target each
+      // frame — never snaps, and settles back to centre on its own once the
+      // pointer leaves (targetPX/Y are reset to 0 on pointerleave).
+      if (enableParallax) {
+        parallaxX += (targetPX - parallaxX) * 0.06;
+        parallaxY += (targetPY - parallaxY) * 0.06;
+      }
+
       draw();
       animationId = window.requestAnimationFrame(tick);
     };
@@ -605,12 +642,37 @@ function HeroVisual() {
     window.addEventListener("resize", onResize);
     document.addEventListener("visibilitychange", onVisibility);
 
+    // Pointer parallax target — updated instantly on move, but only ever
+    // consumed through the eased parallaxX/Y above, and only registered at
+    // all when parallax is enabled (desktop, motion allowed).
+    const container = canvas.parentElement;
+    const onPointerMove = (event) => {
+      const rect = container.getBoundingClientRect();
+      const nx = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+      const ny = ((event.clientY - rect.top) / rect.height) * 2 - 1;
+      targetPX = Math.max(-1, Math.min(1, nx));
+      targetPY = Math.max(-1, Math.min(1, ny));
+    };
+    const onPointerLeave = () => {
+      targetPX = 0;
+      targetPY = 0;
+    };
+
+    if (enableParallax && container) {
+      container.addEventListener("pointermove", onPointerMove);
+      container.addEventListener("pointerleave", onPointerLeave);
+    }
+
     return () => {
       stop();
       window.clearTimeout(resizeTimer);
       window.removeEventListener("resize", onResize);
       document.removeEventListener("visibilitychange", onVisibility);
       if (observer) observer.disconnect();
+      if (enableParallax && container) {
+        container.removeEventListener("pointermove", onPointerMove);
+        container.removeEventListener("pointerleave", onPointerLeave);
+      }
     };
   }, []);
 
