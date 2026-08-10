@@ -1717,15 +1717,40 @@ img {
 
 /* ==========================================================================
    Resume page
+   The document is the hero here, not a dark panel around it: there is no
+   large --surface box behind the PDF any more, only a tight max-width
+   wrapper and a very soft gold glow sitting behind the whole page.
    ========================================================================== */
 
 .resume-page {
-  padding: calc(var(--nav-height) + 4rem) 0 5rem;
+  position: relative;
+  z-index: 0;
+  padding: calc(var(--nav-height) + 4rem) 0 4rem;
+}
+
+/* Extremely subtle ambient light behind the header and document, not a
+   gradient painted on top of the page — negative z-index keeps it under
+   every piece of static content without needing per-element z-index. */
+.resume-page::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: calc(var(--nav-height) + 1rem);
+  left: 50%;
+  width: min(64rem, 92vw);
+  height: 30rem;
+  transform: translateX(-50%);
+  background: radial-gradient(
+    circle at center,
+    rgba(245, 197, 66, 0.12),
+    transparent 55%
+  );
+  pointer-events: none;
 }
 
 .resume-page__head {
   text-align: center;
-  margin-bottom: 2.5rem;
+  margin-bottom: 2.75rem;
 }
 
 .resume-page__actions {
@@ -1738,32 +1763,69 @@ img {
 
 .resume-doc {
   display: flex;
-  justify-content: center;
-  padding: 1rem;
-  border-radius: var(--radius);
-  background: var(--surface);
-  border: 1px solid var(--border);
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
   overflow-x: auto;
+  /* One-time entrance for the document itself — not a loop, not applied to
+     the PDF's own content, just how the block arrives on first paint. */
+  animation: resumeDocEnter 550ms var(--ease) both;
 }
 
+@keyframes resumeDocEnter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* The white page itself carries the "card" now: real paper on a dark desk,
+   separated by shadow alone rather than a border or a surrounding panel. */
 .resume-doc .react-pdf__Page {
-  border-radius: var(--radius-sm);
+  border-radius: 6px;
   overflow: hidden;
-  box-shadow: 0 20px 50px -30px rgba(0, 0, 0, 0.9);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35), 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.resume-doc .react-pdf__Page:not(:last-child) {
+  margin-bottom: 1.5rem;
 }
 
 .resume-doc canvas {
+  display: block;
   max-width: 100% !important;
   height: auto !important;
 }
 
 .resume-fallback {
+  width: 100%;
+  max-width: 480px;
   padding: 2.5rem 1.5rem;
   text-align: center;
 }
 
 .resume-fallback p {
   margin-bottom: 1.25rem;
+}
+
+@media (max-width: 767px) {
+  .resume-page {
+    padding-bottom: 3rem;
+  }
+
+  .resume-page__actions {
+    flex-direction: column;
+    align-items: stretch;
+    max-width: 320px;
+    margin-inline: auto;
+  }
 }
 
 /* ==========================================================================

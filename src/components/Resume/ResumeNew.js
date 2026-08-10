@@ -13,7 +13,9 @@ import { RESUME_PATH, profile } from "../../data/site";
 pdfjs.GlobalWorkerOptions.workerSrc = `${process.env.PUBLIC_URL}/pdf.worker.min.js`;
 
 const DOWNLOAD_NAME = "Navanith_Krishna_R_Resume.pdf";
-const MAX_PAGE_WIDTH = 820;
+// Matches .resume-doc's own max-width (1000px) minus a little breathing room
+// so the page's shadow always has room to read against the dark background.
+const MAX_PAGE_WIDTH = 900;
 
 function ResumeNew() {
   const containerRef = useRef(null);
@@ -24,7 +26,7 @@ function ResumeNew() {
   useEffect(() => {
     const measure = () => {
       const available = containerRef.current?.clientWidth ?? MAX_PAGE_WIDTH;
-      setPageWidth(Math.min(available - 32, MAX_PAGE_WIDTH));
+      setPageWidth(Math.min(available - 24, MAX_PAGE_WIDTH));
     };
 
     measure();
@@ -66,7 +68,7 @@ function ResumeNew() {
 
         <div className="resume-doc" ref={containerRef}>
           {failed ? (
-            <div className="resume-fallback">
+            <div className="card resume-fallback">
               <p>
                 The inline preview couldn&apos;t be rendered in this browser.
                 You can still open or download the PDF directly.
@@ -87,7 +89,9 @@ function ResumeNew() {
               onLoadSuccess={({ numPages: total }) => setNumPages(total)}
               onLoadError={() => setFailed(true)}
               onSourceError={() => setFailed(true)}
-              loading={<p className="resume-fallback">Loading resume…</p>}
+              loading={
+                <p className="card resume-fallback">Loading resume…</p>
+              }
             >
               {Array.from({ length: numPages }, (_, index) => (
                 <Page
