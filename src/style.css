@@ -113,11 +113,15 @@ body::before {
 }
 
 @media (max-width: 991px) {
-  /* On narrow viewports the hero stacks and the visual sits on top, so pull the
-     backdrop back and hold the bright side in frame. */
+  /* When the hero stacks, the copy moves under the visual and lands where the
+     artwork's bright horizon line falls — gold text on a gold band, which is
+     unreadable. Oversizing the image to 165% of the box height and anchoring it
+     to the top keeps only the upper (beam) portion in frame and pushes the
+     horizon out of view entirely. */
   body::before {
     height: 86vh;
-    background-position: center top, center top, 72% top;
+    background-size: cover, cover, auto 165%;
+    background-position: center top, center top, 68% top;
   }
 }
 
@@ -727,6 +731,10 @@ img {
   font-size: clamp(0.95rem, 2vw, 1.12rem);
   font-weight: 500;
   color: var(--gold);
+  /* Safety net: gold-on-gold text over the backdrop's beams can lose all
+     contrast (this happened in practice once the hero stacked on narrower
+     screens). A dark shadow keeps it legible regardless of what is behind it. */
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7), 0 0 14px rgba(0, 0, 0, 0.55);
 }
 
 .hero__roles-sep {
@@ -758,12 +766,14 @@ img {
 }
 
 /* Soft dark lens: the light shafts are brightest exactly here, so this holds
-   the beams back far enough for the gold nodes to read against them. The
-   falloff reaches zero well inside the edge so it never shows as a disc. */
+   the beams back far enough for the gold nodes to read against them. Kept
+   inside the canvas bounds (scaled to 80%) so the darkening stays under the
+   lattice instead of spilling past it as a visible disc. */
 .hero__visual::before {
   content: "";
   position: absolute;
-  inset: -20%;
+  inset: 0;
+  transform: scale(0.8);
   border-radius: 50%;
   background: radial-gradient(
     circle,
@@ -834,6 +844,26 @@ img {
   .hero__visual {
     order: -1;
     max-width: 340px;
+  }
+
+  /* Once the hero stacks, the copy sits directly over the backdrop image
+     instead of beside it, and how bright that patch is varies with viewport
+     width (a narrow phone reveals a different horizontal slice of the
+     artwork, which can land on a beam). Cropping the image alone isn't
+     reliable at every width, so give the copy its own scrim - contrast here
+     no longer depends on the artwork at all. */
+  .hero__copy {
+    position: relative;
+    z-index: 1;
+    padding: 1.75rem 1.25rem 2.25rem;
+    margin: 0 -1.25rem;
+    border-radius: var(--radius-lg);
+    background: linear-gradient(
+      180deg,
+      rgba(11, 13, 15, 0.72) 0%,
+      rgba(11, 13, 15, 0.6) 55%,
+      rgba(11, 13, 15, 0.3) 100%
+    );
   }
 
   .hero__scroll {
