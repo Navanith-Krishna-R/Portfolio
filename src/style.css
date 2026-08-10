@@ -757,19 +757,21 @@ img {
   margin-inline: auto;
 }
 
-/* Soft dark lens: the light shafts are brightest exactly here, so this keeps
-   the gold nodes of the animation reading against them. */
+/* Soft dark lens: the light shafts are brightest exactly here, so this holds
+   the beams back far enough for the gold nodes to read against them. The
+   falloff reaches zero well inside the edge so it never shows as a disc. */
 .hero__visual::before {
   content: "";
   position: absolute;
-  inset: -14%;
+  inset: -20%;
   border-radius: 50%;
   background: radial-gradient(
     circle,
-    rgba(11, 13, 15, 0.78) 0%,
-    rgba(11, 13, 15, 0.55) 42%,
-    rgba(11, 13, 15, 0.2) 66%,
-    rgba(11, 13, 15, 0) 78%
+    rgba(11, 13, 15, 0.93) 0%,
+    rgba(11, 13, 15, 0.86) 34%,
+    rgba(11, 13, 15, 0.66) 54%,
+    rgba(11, 13, 15, 0.32) 70%,
+    rgba(11, 13, 15, 0) 84%
   );
   pointer-events: none;
 }

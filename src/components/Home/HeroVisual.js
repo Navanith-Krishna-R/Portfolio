@@ -151,8 +151,8 @@ function HeroVisual() {
       // Static outer boundary.
       ctx.beginPath();
       ctx.ellipse(0, 0, radius * 1.32, radius * 1.32, 0, 0, Math.PI * 2);
-      ctx.strokeStyle = `rgba(${GOLD}, 0.1)`;
-      ctx.lineWidth = 1;
+      ctx.strokeStyle = `rgba(${GOLD}, 0.22)`;
+      ctx.lineWidth = 1.1;
       ctx.stroke();
 
       // Two tilted orbits that counter-rotate against the lattice.
@@ -170,8 +170,8 @@ function HeroVisual() {
           0,
           Math.PI * 2
         );
-        ctx.strokeStyle = `rgba(${COOL}, ${0.09 - i * 0.03})`;
-        ctx.lineWidth = 1;
+        ctx.strokeStyle = `rgba(${COOL}, ${0.17 - i * 0.05})`;
+        ctx.lineWidth = 1.1;
         ctx.stroke();
         ctx.restore();
       }
@@ -179,8 +179,8 @@ function HeroVisual() {
       // Short bright arc sweeping the boundary, like an instrument readout.
       ctx.beginPath();
       ctx.arc(0, 0, radius * 1.32, angle * 1.6, angle * 1.6 + 0.55);
-      ctx.strokeStyle = `rgba(${GOLD_BRIGHT}, 0.5)`;
-      ctx.lineWidth = 1.6;
+      ctx.strokeStyle = `rgba(${GOLD_BRIGHT}, 0.85)`;
+      ctx.lineWidth = 2.1;
       ctx.lineCap = "round";
       ctx.stroke();
 
@@ -199,8 +199,10 @@ function HeroVisual() {
         height / 2,
         radius * 1.6
       );
-      glow.addColorStop(0, `rgba(${GOLD}, 0.09)`);
-      glow.addColorStop(0.55, `rgba(${GOLD}, 0.03)`);
+      // Kept low: the CSS lens behind the canvas already darkens this area, and
+      // any extra gold haze here would eat into the nodes' contrast.
+      glow.addColorStop(0, `rgba(${GOLD}, 0.05)`);
+      glow.addColorStop(0.55, `rgba(${GOLD}, 0.015)`);
       glow.addColorStop(1, "rgba(245, 197, 66, 0)");
       ctx.fillStyle = glow;
       ctx.fillRect(0, 0, width, height);
@@ -214,13 +216,13 @@ function HeroVisual() {
         const a = projected[edge.a];
         const b = projected[edge.b];
         const depth = (a.depth + b.depth) / 2;
-        const alpha = (0.05 + depth * 0.22) * edge.strength;
+        const alpha = (0.13 + depth * 0.45) * edge.strength;
 
         ctx.beginPath();
         ctx.moveTo(a.x, a.y);
         ctx.lineTo(b.x, b.y);
         ctx.strokeStyle = `rgba(${depth > 0.62 ? GOLD : COOL}, ${alpha})`;
-        ctx.lineWidth = depth > 0.62 ? 0.9 : 0.7;
+        ctx.lineWidth = depth > 0.62 ? 1.25 : 0.95;
         ctx.stroke();
       }
 
@@ -253,9 +255,9 @@ function HeroVisual() {
       for (let i = 0; i < nodes.length; i += 1) {
         const p = projected[i];
         const node = nodes[i];
-        const shimmer = 0.72 + 0.28 * Math.sin(frame * 0.02 + node.phase * 6.28);
-        const size = (node.hub ? 2.5 : 1.35) * p.scale * shimmer;
-        const alpha = (node.hub ? 0.5 : 0.28) + p.depth * 0.5;
+        const shimmer = 0.78 + 0.22 * Math.sin(frame * 0.02 + node.phase * 6.28);
+        const size = (node.hub ? 3.1 : 1.75) * p.scale * shimmer;
+        const alpha = Math.min(1, (node.hub ? 0.88 : 0.52) + p.depth * 0.48);
 
         ctx.beginPath();
         ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
@@ -267,7 +269,7 @@ function HeroVisual() {
         if (node.hub && p.depth > 0.5) {
           ctx.beginPath();
           ctx.arc(p.x, p.y, size * 3.2, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(${GOLD}, ${0.07 * p.depth})`;
+          ctx.fillStyle = `rgba(${GOLD}, ${0.14 * p.depth})`;
           ctx.fill();
         }
       }
